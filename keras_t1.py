@@ -38,7 +38,7 @@ spots = {
 'A':[0,0,1]
 }
 
-for match in engine.execute("""
+matches = [match for match in engine.execute("""
 SELECT m.FTR,
 p1.flanken,p1.abschluss,p1.kopfballPrazision,p1.kurzpasse,p1.volleys,p1.dribbling,p1.effet,p1.freistossPrazision,p1.langePasse,p1.ballkontrolle,p1.beschleunigung,p1.sprintgeschwindigkeit,p1.beweglichkeit,p1.reaktionen,p1.balance,p1.schusskraft,p1.springkraft,p1.ausdauer,p1.starke,p1.fernschusse,p1.aggressivitat,p1.abfangen,p1.stellungsspiel,p1.ubersicht,p1.elfmeter,p1.ruhe,p1.manndeckung,p1.faireZweikampfe,p1.gratsche,p1.twFlugparaden,
 p1.twFangsicherheit,p1.twAbschlag,p1.twStellungsspiel,p1.twReflexe,
@@ -110,15 +110,23 @@ join player p21 on m.awayPlayer10 = p21.playerID
 join player p22 on m.awayPlayer11 = p22.playerID
 join team t1 on m.homeID = t1.teamID
 join team t2 on m.awayID = t2.teamID
-"""):
+""")]
+
+for match in matches[:-1000]:
     size = len(match)-1
     for _ in range(10):
         x_data.append(np.add(np.random.normal(0, 3, size), match[1:]))
         y_data.append(spots[match[0]])
 
+x_val = []
+y_val = []
+for match in matches[-1000:]:
+    x_val.append(match[1:])
+    y_val.append(spots[match[0]])
+
 x_data = np.array([np.multiply(x,0.01) for x in x_data])
 
-x_train, x_test , y_train, y_test = train_test_split(x_data[:-10000], y_data[:-10000], test_size = 0.20,)
+x_train, x_test , y_train, y_test = train_test_split(x_data, y_data, test_size = 0.20,)
 time2 = time.time()
 print ('Data Creation took ' + str(int((time2-time1)/60))+'m '+str((time1-time2)%60)+'s')
 
@@ -154,9 +162,9 @@ print('Durchschnittswerte im Trainingsset:')
 print(np.mean(y_train, axis=0))
 print('Vorhersagen(Auszug): ')
 pred = [0,0,0]
-for i,p in enumerate([x for x in model.predict(x_data[-10000:])]):
-    pred = np.add(pred,np.multiply(np.argmax(p), y_data[len(x_data)-10000+i]))
+for i,p in enumerate([x for x in model.predict(x_val)]):
+    pred = np.add(pred,np.multiply(np.argmax(p), y_val[i]))
     if i%100 == 0:
         print(p)
 
-print('correct: ',pred,', insgesamt: ',sum(pred),'/10000 = ',sum(pred)/10000, '%')
+print('correct: ',pred,', insgesamt: ',sum(pred),'/1000 = ',sum(pred)/1000)
