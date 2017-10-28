@@ -118,7 +118,7 @@ join team t2 on m.awayID = t2.teamID
 
 x_data = np.array([np.multiply(x,0.01) for x in x_data])
 
-x_train, x_test , y_train, y_test = train_test_split(x_data, y_data, test_size = 0.20,)
+x_train, x_test , y_train, y_test = train_test_split(x_data[:-10000], y_data[:-10000], test_size = 0.20,)
 time2 = time.time()
 print ('Data Creation took ' + str(int((time2-time1)/60))+'m '+str((time1-time2)%60)+'s')
 
@@ -148,13 +148,15 @@ model.compile(loss='categorical_crossentropy',
 
 
 model.fit(x_train, y_train, epochs=120, batch_size = 2048, class_weight = {k:v for k,v in enumerate(np.mean(y_train, axis=0))},  )
-print([int(y) for y in np.sum([x for x in model.predict(x_data[:1000])], axis=0)])
+# print([int(y) for y in np.sum([x for x in model.predict(x_data[:1000])], axis=0)])
+print("\n")
+print('Durchschnittswerte im Trainingsset:')
 print(np.mean(y_train, axis=0))
-
+print('Vorhersagen(Auszug): ')
 pred = [0,0,0]
-for i,p in enumerate([x for x in model.predict(x_data[-1000:])]):
-    pred[np.argmax(p)] += 1
-    if i%5 == 0:
+for i,p in enumerate([x for x in model.predict(x_data[-10000:])]):
+    pred = np.add(pred,np.multiply(np.argmax(p), y_data[i]))
+    if i%100 == 0:
         print(p)
 
-print(pred)
+print('correct: ',pred,', insgesamt: 'sum(pred)'/10000 = ',sum(pred)/10000, '%')
