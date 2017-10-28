@@ -159,4 +159,4 @@ for i,p in enumerate([x for x in model.predict(x_data[-10000:])]):
     if i%100 == 0:
         print(p)
 
-print('correct: ',pred,', insgesamt: 'sum(pred)'/10000 = ',sum(pred)/10000, '%')
+print('correct: ',pred,', insgesamt: ',sum(pred),'/10000 = ',sum(pred)/10000, '%')
