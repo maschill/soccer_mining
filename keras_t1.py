@@ -155,7 +155,7 @@ print(np.mean(y_train, axis=0))
 print('Vorhersagen(Auszug): ')
 pred = [0,0,0]
 for i,p in enumerate([x for x in model.predict(x_data[-10000:])]):
-    pred = np.add(pred,np.multiply(np.argmax(p), y_data[i]))
+    pred = np.add(pred,np.multiply(np.argmax(p), y_data[len(x_data)-10000+i]))
     if i%100 == 0:
         print(p)
 
