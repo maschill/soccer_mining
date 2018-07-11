@@ -2,3 +2,5 @@
 soccer.sqlite
 **/ipynb_checkpoints/*
 testing_playground.ipynb
+__pycache__/
+.ipynb_checkpoints/
