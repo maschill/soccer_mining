@@ -25,7 +25,7 @@ time1 = time.time()
 
 
 
-engine = create_engine('mysql://root:databaselogin@soccer.colzfodvmhs1.eu-central-1.rds.amazonaws.com/soccerdb')
+engine = create_engine(#####<database>#### )
 engine.connect()
 print("connected")
 
